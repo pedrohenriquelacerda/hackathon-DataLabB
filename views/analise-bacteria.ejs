@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Análise de <%= bacteria %>
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Análise Detalhada: <%= bacteria %>
+    </h1>
+
+    <div class="chart-container">
+        <h2>Distribuição por Local de Coleta</h2>
+        <canvas id="localChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Tendência Temporal (Últimos 30 dias)</h2>
+        <canvas id="temporalChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Últimos Registros</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Data</th>
+                    <th>Local</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% dados.forEach(item=> { %>
+                    <tr>
+                        <td>
+                            <%= item.paciente_id %>
+                        </td>
+                        <td>
+                            <%= moment(item.data_coleta).format('DD/MM/YYYY') %>
+                        </td>
+                        <td>
+                            <%= item.local_coleta %>
+                        </td>
+                        <td>
+                            <%= item.resultado_final %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Gráfico por Local
+        new Chart(
+            document.getElementById('localChart'),
+            {
+                type: 'doughnut',
+                data: {
+                    labels: <%= JSON.stringify(porLocal.map(item => item.local_coleta)) %>,
+                    datasets: [{
+                        label: 'Casos',
+                        data: <%= JSON.stringify(porLocal.map(item => item.total)) %>,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribuição por Local de Coleta'
+                        }
+                    }
+                }
+            }
+        );
+
+        // Gráfico Temporal
+        new Chart(
+            document.getElementById('temporalChart'),
+            {
+                type: 'line',
+                data: {
+                    labels: <%= JSON.stringify(tendencia.map(item => moment(item.data).format('DD/MM'))) %>,
+                    datasets: [{
+                        label: 'Casos por dia',
+                        data: <%= JSON.stringify(tendencia.map(item => item.total)) %>,
+                        borderColor: 'rgba(75, 192, 192, 0.7)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tendência Temporal'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...<%= JSON.stringify(tendencia.map(item => item.total)) %>) + 2
+                        }
+                    }
+                }
+            }
+        );
+    </script>
+</body>
+
+</html>

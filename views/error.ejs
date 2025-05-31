@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Erro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            color: #d33;
+        }
+
+        .error-box {
+            border: 1px solid #d33;
+            background: #fee;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Ocorreu um erro</h1>
+
+    <div class="error-box">
+        <p>
+            <%= message %>
+        </p>
+        <% if (error && error.status) { %>
+            <p>Código: <%= error.status %>
+            </p>
+            <% } %>
+    </div>
+
+    <p><a href="/">Voltar à página inicial</a></p>
+</body>
+
+</html>

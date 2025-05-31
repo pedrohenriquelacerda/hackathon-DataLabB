@@ -1,0 +1,52 @@
+.content-div{
+    width: 100rem;
+}
+
+.cards-div{
+    justify-content: center;
+    gap: 2px;
+}
+
+.cards-div div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    margin: 10px;
+    height: 10rem;
+    width: 22rem;
+    border-radius: 15px;
+}
+
+div.total{
+    background-color: #2A7DC0;
+}
+
+div.avaiable{
+    background-color: #4CAF50;
+}
+
+div.maintenance{
+    background-color: #E2C000;
+}
+
+div.occupied{
+    background-color: #E53935;
+}
+
+.requests-graphic-div{
+    justify-content: center;
+    gap: 20px;
+}
+
+.requests-graphic-div div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    margin: 10px;
+    width: 40rem;
+    height: 40rem;  
+    background-color: #EEEEEE;
+}

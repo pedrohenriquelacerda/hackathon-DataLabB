@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Cabin";
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    height: 100%;
+}
+
+.sidebar-div{
+    width: 20rem;
+    height: 100%;
+    background-color: #EEEEEE;
+}

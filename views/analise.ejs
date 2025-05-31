@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Análise de Culturas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .chart-container {
+            width: 90%;
+            height: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Análise de Culturas Bacterianas</h1>
+
+    <div class="chart-container">
+        <h2>Distribuição por Microorganismo</h2>
+        <canvas id="microorganismosChart"></canvas>
+    </div>
+
+    <script>
+        // Dados injetados do servidor (chartData vem como JSON string)
+        const chartData = <% - chartData %>;
+
+        // Inicializa o gráfico após carregar o DOM
+        function initChart() {
+            const ctx = document.getElementById('microorganismosChart').getContext('2d');
+
+            if (!ctx) {
+                console.error('Canvas não encontrado!');
+                return;
+            }
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribuição de Microorganismos'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chama a função quando o DOM estiver pronto
+        if (document.readyState === 'complete') {
+            initChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initChart);
+        }
+    </script>
+</body>
+
+</html>
