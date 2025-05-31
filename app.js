@@ -9,11 +9,15 @@ var culturaRouter = require('./routes/cultura');
 var analiseRouter = require('./routes/analise');
 var models = require('./models/index');
 
+const expressLayouts = require('express-ejs-layouts');
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set('layout', 'layout'); 
 
 
 app.use(logger('dev'));
@@ -25,6 +29,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/cultura', culturaRouter);
 app.use('/analise', analiseRouter);
+
+app.get('/', (req, res) => {
+  res.render('index', {});
+});
 
 app.use(function (req, res, next) {
   next(createError(404));

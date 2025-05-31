@@ -1,0 +1,25 @@
+<% layout('layout') %>
+    <h2>Alertas Epidemiológicos</h2>
+
+    <p>Foram analisados <strong>
+            <%= dados.microrganismos_analisados.length %>
+        </strong> microrganismos nas últimas 52 semanas.</p>
+    <p><strong>
+            <%= dados.total_alertas %>
+        </strong> surtos detectados.</p>
+
+    <% if (dados.alertas.length===0) { %>
+        <div class="alert alert-success">Nenhum surto detectado no período.</div>
+        <% } else { %>
+            <ul class="list-group mt-4">
+                <% dados.alertas.forEach(a=> { %>
+                    <li class="list-group-item">
+                        <strong>
+                            <%= a.microorganismo %>
+                        </strong> – Semana <%= a.semana %>:
+                            <span class="text-danger">🚨 <%= a.total_semana %> casos</span> (média: <%=
+                                a.media_historica %> | limite: <%= a.limite_alerta %>)
+                    </li>
+                    <% }) %>
+            </ul>
+            <% } %>

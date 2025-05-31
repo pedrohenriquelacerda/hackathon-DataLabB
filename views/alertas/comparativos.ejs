@@ -1,0 +1,50 @@
+<% layout('layout') %>
+    <h2>Análise Comparativa Semanal</h2>
+
+    <p>Período analisado: <strong>
+            <%= dados.periodo.inicio %>
+        </strong> até <strong>
+            <%= dados.periodo.fim %>
+        </strong></p>
+    <p>Total de comparações: <strong>
+            <%= dados.comparacoes_realizadas %>
+        </strong></p>
+
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Microrganismo</th>
+                <th>Semana Anterior</th>
+                <th>Semana Atual</th>
+                <th>Casos</th>
+                <th>Variação</th>
+                <th>Alerta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% dados.comparativo.forEach(item=> { %>
+                <% if (item.alerta !=='Estável' ) { %>
+                    <tr class="<%= item.alerta === 'Aumento significativo' ? 'table-danger' : 'table-success' %>">
+                        <td>
+                            <%= item.microorganismo %>
+                        </td>
+                        <td>
+                            <%= item.semana_anterior %> (<%= item.casos_anteriores %>)
+                        </td>
+                        <td>
+                            <%= item.semana_atual %> (<%= item.casos_atuais %>)
+                        </td>
+                        <td>
+                            <%= item.variacao> 0 ? '+' : '' %><%= item.variacao %>
+                        </td>
+                        <td>
+                            <%= item.percentual %>%
+                        </td>
+                        <td><strong>
+                                <%= item.alerta %>
+                            </strong></td>
+                    </tr>
+                    <% } %>
+                        <% }) %>
+        </tbody>
+    </table>

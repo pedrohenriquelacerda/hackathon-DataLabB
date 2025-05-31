@@ -427,5 +427,76 @@ router.get('/alertas/epidemiologicos/comparativo/pdf', async (req, res) => {
     }
 });
 
+router.get('/', (req, res) => {
+    res.render('index', { title: 'Início' });
+});
+
+router.get('/alertas/epidemiologicos', async (req, res) => {
+    const dados = await gerarAlertasEpidemiologicos();
+    res.render('alertas/epidemiologicos', { title: 'Alertas', dados });
+});
+
+router.get('/alertas/epidemiologicos/comparativo', async (req, res) => {
+    const fim = moment().endOf('isoWeek');
+    const inicio = moment(fim).subtract(3, 'weeks').startOf('isoWeek');
+    const registros = await Cultura.findAll({
+        attributes: [
+            [sequelize.literal("DATE_FORMAT(data_coleta, '%x-%v')"), 'ano_semana'],
+            'microorganismo',
+            [sequelize.fn('COUNT', sequelize.col('coleta_id')), 'total'],
+        ],
+        where: { data_coleta: { [Op.between]: [inicio.toDate(), fim.toDate()] } },
+        group: ['ano_semana', 'microorganismo'],
+        order: [[sequelize.literal('ano_semana'), 'ASC']],
+        raw: true,
+    });
+
+    const porMicro = {};
+    registros.forEach(r => {
+        const mic = r.microorganismo;
+        if (!porMicro[mic]) porMicro[mic] = [];
+        porMicro[mic].push({ semana: r.ano_semana, total: parseInt(r.total) });
+    });
+
+    const comparativo = [];
+    Object.entries(porMicro).forEach(([micro, dados]) => {
+        dados.sort((a, b) => a.semana.localeCompare(b.semana));
+        for (let i = 1; i < dados.length; i++) {
+            const anterior = dados[i - 1];
+            const atual = dados[i];
+            const variacao = atual.total - anterior.total;
+            const percentual = anterior.total > 0 ? (variacao / anterior.total) * 100 : 100;
+            comparativo.push({
+                microorganismo: micro,
+                semana_anterior: anterior.semana,
+                semana_atual: atual.semana,
+                casos_anteriores: anterior.total,
+                casos_atuais: atual.total,
+                variacao,
+                percentual: parseFloat(percentual.toFixed(2)),
+                alerta: percentual > 50 && atual.total >= 3
+                    ? 'Aumento significativo'
+                    : percentual < -50 && anterior.total >= 3
+                        ? 'Redução expressiva'
+                        : 'Estável'
+            });
+        }
+    });
+
+    comparativo.sort((a, b) => b.semana_atual.localeCompare(a.semana_atual) || b.percentual - a.percentual);
+
+    res.render('alertas/comparativo', {
+        title: 'Comparativo Semanal',
+        dados: {
+            periodo: {
+                inicio: inicio.format('YYYY-MM-DD'),
+                fim: fim.format('YYYY-MM-DD')
+            },
+            comparacoes_realizadas: comparativo.length,
+            comparativo
+        }
+    });
+});
+
 
 module.exports = router;

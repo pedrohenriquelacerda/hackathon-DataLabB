@@ -1,32 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/stylesheets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/stylesheets/sidebar.css">
-    <link rel="stylesheet" href="/stylesheets/header.css">
-    <link rel="stylesheet" href="/stylesheets/base.css">
-    <link rel="stylesheet" href="/stylesheets/dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <title>
-        <%= title %>
+        Vigilância Epidemiológica - Alertas Epidemiológicos      
     </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
-<body>
-    <%- include('partials/header') %>
-        <main class="d-flex flex-row">
-            <div class="sidebar-div">
-                <%- include('partials/sidebar') %>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Vigilância Epidemiológica</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/analise/alertas/epidemiologicos">Alertas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analise/alertas/epidemiologicos/comparativo">Comparativo</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/analise/alertas/epidemiologicos/pdf">Relatório - PDF</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analise/alertas/epidemiologicos/comparativo/pdf">Surtos recentes - PDF</a></li>
+                </ul>
             </div>
-            <div class="content-div d-flex flex-column">
-                <%- body %>
-            </div>
-        </main>
+        </div>
+    </nav>
+    <div class="container">
+        <%- body %>
+    </div>
 </body>
 
 </html>
