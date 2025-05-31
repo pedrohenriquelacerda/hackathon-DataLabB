@@ -237,7 +237,7 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
         doc.end();
         stream.pipe(res);
     } catch (error) {
-        console.error('❌ Erro ao gerar PDF:', error);
+        console.error('Erro ao gerar PDF:', error);
         res.status(500).json({ error: error.message });
     }
 });
