@@ -1,5 +1,4 @@
-# 🏥 Sistema de Leitos Hospitalares 
-Este sistema tem como objetivo auxiliar na gestão dos leitos hospitalares. A aplicação oferece um dashboard centralizado, onde é possível visualizar o status dos leitos da instituição e registrar solicitações específicas para cada um deles. Com isso, busca-se otimizar o uso dos recursos disponíveis e facilitar a comunicação entre as equipes envolvidas no cuidado dos pacientes.
+# 🏥DataLab-B
 
 ## 🛠️ Tecnologias Utilizadas
 - HTML/CSS
@@ -13,7 +12,7 @@ Este sistema tem como objetivo auxiliar na gestão dos leitos hospitalares. A ap
 
 **1. Clone o repositório**
 ```bash
-git clone https://github.com/BrunoCLopes/app-leitos.git
+git clone https://github.com/pedrohenriquelacerda/hackathon-DataLabB.git
 ```
 
 **2. Instale as dependências**
@@ -26,12 +25,7 @@ npm install
 node database/initialize.js
 ```
 
-**4. Popular o Banco de Dados com dados de exemplo**
-```bash
-node database/seed.js
-```
-
-**5. Inicie o servidor**
+**4. Inicie o servidor**
 ```bash
 npm run dev
 ```
