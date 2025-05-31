@@ -96,14 +96,14 @@ router.get('/alertas/epidemiologicos', async (req, res) => {
         const resultado = await gerarAlertasEpidemiologicos();
         res.json(resultado);
     } catch (error) {
-        console.error('❌ Erro na análise:', error);
+        console.error('Erro na análise:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
 router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
     try {
-        console.log('📄 Gerando PDF com análise epidemiológica...');
+        console.log('Gerando PDF com análise epidemiológica...');
         const resultado = await gerarAlertasEpidemiologicos();
 
         const doc = new PDFDocument({ margin: 50 });
@@ -184,7 +184,7 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
 
         doc.moveDown();
 
-        // 🔍 Agrupar alertas por microrganismo para gerar gráficos
+        // Agrupar alertas por microrganismo para gerar gráficos
         const micData = {};
 
         resultado.alertas.forEach(alerta => {
@@ -211,7 +211,7 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
             return b.frequencia_alertas - a.frequencia_alertas;
         });
 
-        // 📊 Título dos gráficos
+        // Título dos gráficos
         doc.fontSize(16).font('Helvetica-Bold').fillColor('black').text('Gráficos de Tendência por Microrganismo com Surto', {
             align: 'center',
         });
@@ -244,7 +244,7 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
 
 router.get('/alertas/epidemiologicos/comparativo', async (req, res) => {
     try {
-        console.log('📊 Iniciando análise comparativa semanal...');
+        console.log('Iniciando análise comparativa semanal...');
 
         const fim = moment().endOf('isoWeek');
         const inicio = moment(fim).subtract(6, 'weeks').startOf('isoWeek');
@@ -398,7 +398,7 @@ router.get('/alertas/epidemiologicos/comparativo/pdf', async (req, res) => {
         res.setHeader('Content-type', 'application/pdf');
         doc.pipe(stream);
 
-        doc.fontSize(18).font('Helvetica-Bold').text('Alerta: Aumento Significativo de Microrganismos', { align: 'center' });
+        doc.fontSize(18).font('Helvetica-Bold').text('ALERTA: Aumento Significativo de Microrganismos', { align: 'center' });
         doc.moveDown();
         doc.fontSize(12).font('Helvetica').text(`Período analisado: ${inicio.format('DD/MM/YYYY')} a ${fim.format('DD/MM/YYYY')}`);
         doc.text(`Microrganismos com aumento significativo: ${comparativo.length}`);
