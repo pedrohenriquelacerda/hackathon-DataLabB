@@ -124,6 +124,56 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
         doc.text(`Total de surtos detectados: ${resultado.total_alertas}`);
         doc.moveDown();
 
+        // Agrupar alertas por microrganismo para gerar gráficos
+        const micData = {};
+
+        resultado.alertas.forEach(alerta => {
+            if (!micData[alerta.microorganismo]) {
+                micData[alerta.microorganismo] = {
+                    microorganismo: alerta.microorganismo,
+                    total_excesso: 0,
+                    frequencia_alertas: 0,
+                    series: [],
+                };
+            }
+            micData[alerta.microorganismo].total_excesso += alerta.total_semana - alerta.limite_alerta;
+            micData[alerta.microorganismo].frequencia_alertas += 1;
+            micData[alerta.microorganismo].series.push({
+                ano_semana: alerta.semana,
+                total: alerta.total_semana,
+            });
+        });
+
+        const micOrdenados = Object.values(micData).sort((a, b) => {
+            if (b.total_excesso !== a.total_excesso) {
+                return b.total_excesso - a.total_excesso;
+            }
+            return b.frequencia_alertas - a.frequencia_alertas;
+        });
+
+        // Título dos gráficos
+        doc.fontSize(16).font('Helvetica-Bold').fillColor('black').text('Gráficos de Tendência por Microrganismo com Surto', {
+            align: 'center',
+        });
+        doc.moveDown();
+
+        // Geração dos gráficos ordenados
+        for (const mic of micOrdenados) {
+            const imagemBuffer = await gerarGrafico(
+                mic.series.sort((a, b) => a.ano_semana.localeCompare(b.ano_semana)),
+                mic.microorganismo
+            );
+
+            doc.fontSize(13).font('Helvetica-Bold').fillColor('black').text(`${mic.microorganismo}`, { align: 'left' });
+            doc.moveDown(0.5);
+            doc.image(imagemBuffer, {
+                fit: [500, 300],
+                align: 'center',
+                valign: 'center',
+            });
+            doc.moveDown(2);
+        }
+
         // Lista de Microrganismos
         doc.fontSize(14).font('Helvetica-Bold').text('Microrganismos Analisados:', { underline: true });
         doc.fontSize(11).font('Helvetica').list(resultado.microrganismos_analisados);
@@ -180,58 +230,6 @@ router.get('/alertas/epidemiologicos/pdf', async (req, res) => {
             desenharAlertas(comuns, 'Alertas COMUNS (acima do IC95)');
         } else {
             doc.fontSize(12).fillColor('black').text('Nenhum surto foi detectado neste período.');
-        }
-
-        doc.moveDown();
-
-        // Agrupar alertas por microrganismo para gerar gráficos
-        const micData = {};
-
-        resultado.alertas.forEach(alerta => {
-            if (!micData[alerta.microorganismo]) {
-                micData[alerta.microorganismo] = {
-                    microorganismo: alerta.microorganismo,
-                    total_excesso: 0,
-                    frequencia_alertas: 0,
-                    series: [],
-                };
-            }
-            micData[alerta.microorganismo].total_excesso += alerta.total_semana - alerta.limite_alerta;
-            micData[alerta.microorganismo].frequencia_alertas += 1;
-            micData[alerta.microorganismo].series.push({
-                ano_semana: alerta.semana,
-                total: alerta.total_semana,
-            });
-        });
-
-        const micOrdenados = Object.values(micData).sort((a, b) => {
-            if (b.total_excesso !== a.total_excesso) {
-                return b.total_excesso - a.total_excesso;
-            }
-            return b.frequencia_alertas - a.frequencia_alertas;
-        });
-
-        // Título dos gráficos
-        doc.fontSize(16).font('Helvetica-Bold').fillColor('black').text('Gráficos de Tendência por Microrganismo com Surto', {
-            align: 'center',
-        });
-        doc.moveDown();
-
-        // Geração dos gráficos ordenados
-        for (const mic of micOrdenados) {
-            const imagemBuffer = await gerarGrafico(
-                mic.series.sort((a, b) => a.ano_semana.localeCompare(b.ano_semana)),
-                mic.microorganismo
-            );
-
-            doc.fontSize(13).font('Helvetica-Bold').fillColor('black').text(`➡ ${mic.microorganismo}`, { align: 'left' });
-            doc.moveDown(0.5);
-            doc.image(imagemBuffer, {
-                fit: [500, 300],
-                align: 'center',
-                valign: 'center',
-            });
-            doc.moveDown(1);
         }
 
         doc.end();
